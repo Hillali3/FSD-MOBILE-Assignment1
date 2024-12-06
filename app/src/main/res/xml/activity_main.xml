@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <androidx.gridlayout.widget.GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:columnCount="3"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:rowCount="3">
+
+        <!-- Buttons for Tic-Tac-Toe cells -->
+        <Button
+            android:id="@+id/button1"
+            style="@style/TicTacToeButton" />
+        <Button
+            android:id="@+id/button2"
+            style="@style/TicTacToeButton" />
+        <Button
+            android:id="@+id/button3"
+            style="@style/TicTacToeButton" />
+        <Button
+            android:id="@+id/button4"
+            style="@style/TicTacToeButton" />
+        <Button
+            android:id="@+id/button5"
+            style="@style/TicTacToeButton" />
+        <Button
+            android:id="@+id/button6"
+            style="@style/TicTacToeButton" />
+        <Button
+            android:id="@+id/button7"
+            style="@style/TicTacToeButton" />
+        <Button
+            android:id="@+id/button8"
+            style="@style/TicTacToeButton" />
+        <Button
+            android:id="@+id/button9"
+            style="@style/TicTacToeButton" />
+    </androidx.gridlayout.widget.GridLayout>
+
+    <!-- Text view for displaying status (Player 1 or Player 2 wins) -->
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Player 1's Turn"
+        android:textSize="18sp"
+        android:layout_centerHorizontal="true"
+        app:layout_constraintBottom_toTopOf="@+id/gridLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
