@@ -3,85 +3,88 @@ package com.example.tictactoe
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.GridLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var statusText: TextView
     private lateinit var buttons: Array<Button>
-    private var currentPlayer = "X"  // Player 1 starts as X
-    private var gameState = Array(3) { Array(3) { "" } }  // 3x3 grid of empty strings
+    private lateinit var resetButton: Button
+    private var currentPlayer = "X"
+    private var gameBoard = Array(3) { arrayOfNulls<String>(3) }
+    private var gameOver = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        statusText = findViewById(R.id.statusText)
-        buttons = arrayOf(
-            findViewById(R.id.button1), findViewById(R.id.button2), findViewById(R.id.button3),
-            findViewById(R.id.button4), findViewById(R.id.button5), findViewById(R.id.button6),
-            findViewById(R.id.button7), findViewById(R.id.button8), findViewById(R.id.button9)
-        )
-
-        // Initialize button click listeners
-        buttons.forEachIndexed { index, button ->
-            button.setOnClickListener {
-                onCellClick(index, button)
+        statusText = findViewById(R.id.status)
+        resetButton = findViewById(R.id.resetButton)
+        buttons = Array(9) { i ->
+            findViewById<Button>(resources.getIdentifier("button${i + 1}", "id", packageName)).apply {
+                setOnClickListener {
+                    onCellClicked(this, i)
+                }
             }
+        }
+
+        resetButton.setOnClickListener {
+            resetGame()
         }
     }
 
-    private fun onCellClick(index: Int, button: Button) {
+    private fun onCellClicked(button: Button, index: Int) {
+        if (gameOver || button.text.isNotEmpty()) return
+
         val row = index / 3
         val col = index % 3
 
-        // If the cell is already taken, do nothing
-        if (gameState[row][col].isNotEmpty()) return
-
-        // Update the game state and button text
-        gameState[row][col] = currentPlayer
+        gameBoard[row][col] = currentPlayer
         button.text = currentPlayer
+        checkGameStatus()
 
-        // Check for a winner
-        if (checkWinner()) {
-            statusText.text = "$currentPlayer Wins!"
-            disableAllButtons()
+        currentPlayer = if (currentPlayer == "X") "O" else "X"
+        statusText.text = "Player $currentPlayer's turn"
+    }
+
+    private fun checkGameStatus() {
+        if (checkWinner("X")) {
+            gameOver = true
+            statusText.text = "Player X wins!"
+            Toast.makeText(this, "Player X wins!", Toast.LENGTH_SHORT).show()
+        } else if (checkWinner("O")) {
+            gameOver = true
+            statusText.text = "Player O wins!"
+            Toast.makeText(this, "Player O wins!", Toast.LENGTH_SHORT).show()
         } else if (isBoardFull()) {
-            statusText.text = "It's a Draw!"
-        } else {
-            // Switch players
-            currentPlayer = if (currentPlayer == "X") "O" else "X"
-            statusText.text = "Player $currentPlayer's Turn"
+            gameOver = true
+            statusText.text = "It's a tie!"
+            Toast.makeText(this, "It's a tie!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun checkWinner(): Boolean {
-        // Check rows and columns
+    private fun checkWinner(player: String): Boolean {
+        // Check rows, columns, and diagonals
         for (i in 0..2) {
-            if (gameState[i][0] == currentPlayer && gameState[i][1] == currentPlayer && gameState[i][2] == currentPlayer) {
+            if ((gameBoard[i][0] == player && gameBoard[i][1] == player && gameBoard[i][2] == player) ||
+                (gameBoard[0][i] == player && gameBoard[1][i] == player && gameBoard[2][i] == player)) {
                 return true
             }
-            if (gameState[0][i] == currentPlayer && gameState[1][i] == currentPlayer && gameState[2][i] == currentPlayer) {
-                return true
-            }
         }
-
-        // Check diagonals
-        if (gameState[0][0] == currentPlayer && gameState[1][1] == currentPlayer && gameState[2][2] == currentPlayer) {
+        if ((gameBoard[0][0] == player && gameBoard[1][1] == player && gameBoard[2][2] == player) ||
+            (gameBoard[0][2] == player && gameBoard[1][1] == player && gameBoard[2][0] == player)) {
             return true
         }
-        if (gameState[0][2] == currentPlayer && gameState[1][1] == currentPlayer && gameState[2][0] == currentPlayer) {
-            return true
-        }
-
         return false
     }
 
     private fun isBoardFull(): Boolean {
         for (i in 0..2) {
             for (j in 0..2) {
-                if (gameState[i][j].isEmpty()) {
+                if (gameBoard[i][j] == null) {
                     return false
                 }
             }
@@ -89,7 +92,14 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun disableAllButtons() {
-        buttons.forEach { button -> button.isEnabled = false }
+    private fun resetGame() {
+        gameOver = false
+        currentPlayer = "X"
+        statusText.text = "Player X's turn"
+        gameBoard = Array(3) { arrayOfNulls<String>(3) }
+
+        for (button in buttons) {
+            button.text = ""
+        }
     }
 }
