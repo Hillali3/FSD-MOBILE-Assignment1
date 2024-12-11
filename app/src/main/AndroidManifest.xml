@@ -16,16 +16,19 @@
             android:name="com.google.android.actions"
             android:resource="@xml/activity_main" />
 
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.FSDMOBILEAssignment1">
+        <activity android:name=".MainActivity">
+            <!-- Intent filter for main activity -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- This line is where the error is likely coming from -->
+            <meta-data
+                android:name="android.app.lib_name"
+                android:resource="@xml/activity_main" />
         </activity>
+
     </application>
 
 </manifest>
